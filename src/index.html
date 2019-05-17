@@ -9,8 +9,8 @@
         }
         .cellule{
             display: block;
-            width:20px;
-            height:20px;
+            width:10px;
+            height:10px;
             border: 1px solid #000000;
             margin: 1px;
         }
@@ -35,7 +35,8 @@
     <div class="controls">
         Largeur : <input type="number" name="largeur" id="hauteurSimulation"><br>
         Hauteur : <input type="number" name="hauteur" id="largeurSimulation"><br>
-        <button>Lancer</button>
+        Vitesse : <input type="range" name="vitess" id="vitesseSimulation"><br>
+        <button id="btnLanceSimulation">Demarrer la simulation</button>
         <button id="btnCycleSuivant">Cycle Suivant</button>
     </div>
     <script>

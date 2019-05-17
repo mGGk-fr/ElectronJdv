@@ -1,10 +1,12 @@
 //Initialisation IPC client
 const { ipcRenderer } = require('electron');
 
-//Constantes représentant l'interface graphique
+//Elements représentant la configuration de la simulation
 const largeurGrille = document.getElementById("hauteurSimulation");
 const hauteurGrille = document.getElementById("largeurSimulation");
+const vitesseSimulation = document.getElementById("vitesseSimulation");
 
+//Elements gérant la simulation
 const btnLancerSimulation = document.getElementById("btnLanceSimulation");
 const btnCycleSuivant = document.getElementById("btnCycleSuivant");
 
@@ -29,11 +31,6 @@ function initGrille(){
     hauteurGrille.value = reponse;
     reponse = ipcRenderer.sendSync("commSync","getGrilleLargeur");
     largeurGrille.value = reponse;
-    chargeGrille();
-}
-
-//Charge la grille de l'application
-function chargeGrille(){
     gameGrid.innerHTML = "";
     for(let i = 0; i < hauteurGrille.value;i++){
         let currentLine = rowTpl.cloneNode();
@@ -44,9 +41,41 @@ function chargeGrille(){
             if(status){
                 currentCell.classList.add("vivante");
             }
+            currentCell.id=i+"x"+j;
             currentLine.innerHTML+=currentCell.outerHTML;
         }
         gameGrid.innerHTML+=currentLine.outerHTML;
+    }
+    chargeGrille();
+}
+
+//Charge la grille de l'application
+function chargeGrille(){
+    for(let i = 0; i < hauteurGrille.value;i++){
+        for(let j = 0; j < largeurGrille.value; j++){
+            let status = ipcRenderer.sendSync("commSync","getCellStatus",i,j);
+            let curCell = document.getElementById(i+"x"+j);
+            if(status){
+                if(!curCell.classList.contains("vivante")){
+                    curCell.classList.add("vivante");
+                }
+            }else{
+                curCell.classList.remove("vivante");
+            }
+        }
+    }
+}
+
+function handleAutoCycle(){
+    let response = ipcRenderer.sendSync("commSync","getAutoCycleStatus");
+    if(response === true){
+        ipcRenderer.sendSync("commSync", "setAutoCycleStatus",false);
+        btnLancerSimulation.innerText = "Démarrer la simulation";
+        btnCycleSuivant.disabled = false;
+    }else{
+        ipcRenderer.sendSync("commSync", "setAutoCycleStatus", true);
+        btnLancerSimulation.innerText = "Arrêter la simulation";
+        btnCycleSuivant.disabled = true;
     }
 }
 
@@ -56,10 +85,10 @@ function nextCycle(){
     chargeGrille();
 }
 
-//Active la génération de cycle automatique
+//Gestion du click sur le bouton pour démarrer automatiquement la génération de cycles
+btnLancerSimulation.addEventListener("click", handleAutoCycle,false);
 
-//Desactive la génération de cycle automatique
-
+//Click sur le bouton pour avancer d'un cycle
 btnCycleSuivant.addEventListener("click", nextCycle, false);
 
 

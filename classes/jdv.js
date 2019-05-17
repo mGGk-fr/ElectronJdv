@@ -44,7 +44,6 @@ class JdV{
         for(let i = 0; i < this.hauteur; i++){
             let tableauLigne = [];
             for(let j = 0; j < this.largeur; j++){
-                console.log(i+"/"+j);
                 let nbCellEnVie = this.getNombreCelluleVivante(i,j);
                 if(this.tableauCellule[i][j] == true){
                     if(nbCellEnVie < 2 || nbCellEnVie > 3){
