@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ElectronJdv</title>
+    <style>
+        .templates{
+            display: none;
+        }
+        .cellule{
+            display: block;
+            width:20px;
+            height:20px;
+            border: 1px solid #000000;
+            margin: 1px;
+        }
+        .vivante{
+            background-color: #000000;
+        }
+        .ligne{
+            display:flex;
+        }
+    </style>
+</head>
+<body>
+    <h1>ElectronJdv</h1>
+    <div class="templates">
+        <div id="cellTpl" class="cellule"></div>
+        <div id="rowTpl" class="ligne"></div>
+    </div>
+
+    <div id="gameArena">
+
+    </div>
+    <div class="controls">
+        Largeur : <input type="number" name="largeur" id="hauteurSimulation"><br>
+        Hauteur : <input type="number" name="hauteur" id="largeurSimulation"><br>
+        <button>Lancer</button>
+        <button id="btnCycleSuivant">Cycle Suivant</button>
+    </div>
+    <script>
+        require('./js/renderer.js')
+    </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "electronjdv",
+  "version": "1.0.0",
+  "description": "Jeu de la vie en JS/Electron",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mGGk-fr/ElectronJdv.git"
+  },
+  "author": "Guillaume mGGk Arino",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/mGGk-fr/ElectronJdv/issues"
+  },
+  "homepage": "https://github.com/mGGk-fr/ElectronJdv#readme",
+  "devDependencies": {
+    "electron": "^5.0.1"
+  },
+  "dependencies": {
+    "vue": "^2.6.10"
+  }
+}
