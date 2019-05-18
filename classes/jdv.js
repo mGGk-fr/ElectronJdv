@@ -4,10 +4,9 @@
  * Fichier : classes/jdv.js
  * Description : Classe du jeu de la vie
  */
-//const Cellule = require("./cellule");
 
 class JdV{
-    tableauCellule = [];
+    tableauCellule;
     hauteur;
     largeur;
 
@@ -68,17 +67,9 @@ class JdV{
             for(let j = 0; j < this.largeur; j++){
                 let nbCellEnVie = this.getNombreCelluleVivante(i,j);
                 if(this.tableauCellule[i][j] === true){
-                    if(nbCellEnVie === 2 || nbCellEnVie === 3){
-                        tableauLigne[j] = true;
-                    }else{
-                        tableauLigne[j] = false;
-                    }
+                    tableauLigne[j] = nbCellEnVie === 2 || nbCellEnVie === 3;
                 }else{
-                    if(nbCellEnVie === 3){
-                        tableauLigne[j] = true;
-                    }else{
-                        tableauLigne[j] = false;
-                    }
+                    tableauLigne[j] = nbCellEnVie === 3;
                 }
             }
             nouveauTableau[i] = tableauLigne;

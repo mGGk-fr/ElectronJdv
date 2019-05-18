@@ -1,10 +1,11 @@
 //Initialisation IPC client
 const { ipcRenderer } = require('electron');
+const shell = require('electron').shell;
 
 //Timer autoplay
 let timerId;
 let isPlaying = false;
-let vitesseSimulation = 450;
+let vitesseSimulation = 500;
 
 //Elements représentant la configuration de la simulation
 const largeurGrille = document.getElementById("largeurSimulation");
@@ -22,12 +23,25 @@ const tailleCell = 10;
 const canvasCellGrid = document.getElementById("cellGrid");
 const context2D = canvasCellGrid.getContext("2d");
 
+//Liens hrefs
+const links = document.querySelectorAll('a[href]');
+
+/************************************
+ * Interaction process principal
+ ************************************/
+//Envoie une demande de génération de cycle suivant
+function nextCycle(){
+    ipcRenderer.sendSync("commSync","processOneCycle");
+    chargeGrille();
+}
+
 //Charge la liste des configurations dans le select
 function getListeConfigurations(){
     //On charge la liste des configurations disponibles
     let reponse = ipcRenderer.sendSync("commSync", "getConfigList");
     //On vide la liste des configurations
     configurationSelect.innerHTML = "";
+    //On rempli la liste des configurations
     reponse.forEach(function(config){
         let opt = document.createElement("option");
         opt.value = config.id;
@@ -36,66 +50,9 @@ function getListeConfigurations(){
     });
 }
 
-//Gère le changement de configuration
-function handleChangeConfiguration(){
-    if(ipcRenderer.sendSync("commSync","changeConfiguration",configurationSelect[configurationSelect.selectedIndex].value)){
-        initGrille();
-    }else{
-        alert("Une erreur est survenue durant le changement de configuration");
-    }
-}
-
-//Initialise la grille html
-function initGrille(){
-    hauteurGrille.value = ipcRenderer.sendSync("commSync","getGrilleHauteur");
-    largeurGrille.value = ipcRenderer.sendSync("commSync","getGrilleLargeur");
-    canvasCellGrid.height = hauteurGrille.value*tailleCell;
-    canvasCellGrid.width = largeurGrille.value*tailleCell;
-    chargeGrille();
-}
-
-//Charge la grille de l'application
-function chargeGrille(){
-    nettoyerGrille();
-    let tab = ipcRenderer.sendSync("commSync", "getTableauCellule");
-    for(let i = 0; i < largeurGrille.value;i++){
-        for(let j = 0; j < hauteurGrille.value; j++){
-            //let status = ipcRenderer.sendSync("commSync","getCellStatus",i,j);
-            //drawCell(i+1,j+1,"red");
-            if(tab[i][j]){
-                drawCell(i,j,"black");
-            }else{
-                //drawCell(i,j,"white");
-            }
-        }
-    }
-    //drawGrille();
-}
-
-//Nettoie la grille
-function nettoyerGrille(){
-    context2D.clearRect(0,0,canvasCellGrid.width,canvasCellGrid.height);
-}
-
-function drawGrille(){
-    //On dessine la grille
-    context2D.strokeStyle = "black";
-    for(let i = 1; i< hauteurGrille.value;i++){
-        context2D.moveTo(0,i*tailleCell);
-        context2D.lineTo(canvasCellGrid.width,i*tailleCell);
-    }
-    for(let i = 1; i< largeurGrille.value;i++){
-        context2D.moveTo(i*tailleCell,0);
-        context2D.lineTo(i*tailleCell,canvasCellGrid.height);
-    }
-    context2D.stroke();
-}
-
-//Dessine les cellules dans le canvas
-function drawCell(ligne, colonne,color){
-    context2D.fillStyle = color;
-    context2D.fillRect(colonne*tailleCell,ligne*tailleCell,tailleCell,tailleCell);
-}
+/************************************
+ * Gestion des evenements
+ ************************************/
 
 //Gere les modification hauteur / largeur
 function handleChangeHauteur(){
@@ -112,7 +69,6 @@ function handleChangeVitesse(){
     vitesseSimulation = parseInt(selVitesseSimulation.value);
     clearInterval(timerId);
     if(isPlaying){
-        console.log(vitesseSimulation);
         timerId = setInterval(nextCycle,vitesseSimulation);
     }
 
@@ -133,12 +89,58 @@ function handleAutoCycle(){
     }
 }
 
-//Envoie une demande de génération de cycle suivant
-function nextCycle(){
-    ipcRenderer.sendSync("commSync","processOneCycle");
+//Gère le changement de configuration
+function handleChangeConfiguration(){
+    if(ipcRenderer.sendSync("commSync","changeConfiguration",configurationSelect[configurationSelect.selectedIndex].value)){
+        initGrille();
+    }else{
+        alert("Une erreur est survenue durant le changement de configuration");
+    }
+}
+
+/************************************
+ * Gestion du dessin
+ ************************************/
+//Initialise la grille html
+function initGrille(){
+    hauteurGrille.value = ipcRenderer.sendSync("commSync","getGrilleHauteur");
+    largeurGrille.value = ipcRenderer.sendSync("commSync","getGrilleLargeur");
+    canvasCellGrid.height = hauteurGrille.value*tailleCell;
+    canvasCellGrid.width = largeurGrille.value*tailleCell;
     chargeGrille();
 }
 
+//Charge la grille de l'application
+function chargeGrille(){
+    nettoyerGrille();
+    let tab = ipcRenderer.sendSync("commSync", "getTableauCellule");
+    for(let i = 0; i < largeurGrille.value;i++){
+        for(let j = 0; j < hauteurGrille.value; j++){
+            if(tab[i][j]){
+                drawCell(i,j,"black");
+            }
+        }
+    }
+}
+
+//Nettoie la grille
+function nettoyerGrille(){
+    context2D.clearRect(0,0,canvasCellGrid.width,canvasCellGrid.height);
+}
+
+//Dessine les cellules dans le canvas
+function drawCell(ligne, colonne,color){
+    context2D.fillStyle = color;
+    context2D.fillRect(colonne*tailleCell,ligne*tailleCell,tailleCell,tailleCell);
+}
+
+
+
+
+
+/************************************
+ * Declaration des handlers
+ ************************************/
 //Gestion des modifications hauteur/largeur
 hauteurGrille.addEventListener("change",handleChangeHauteur, false);
 hauteurGrille.addEventListener("keyup",handleChangeHauteur, false);
@@ -159,6 +161,20 @@ btnLancerSimulation.addEventListener("click", handleAutoCycle,false);
 //Click sur le bouton pour avancer d'un cycle
 btnCycleSuivant.addEventListener("click", nextCycle, false);
 
+//Gestion des liens href
+Array.prototype.forEach.call(links, function (link) {
+    const url = link.getAttribute('href');
+    if (url.indexOf('http') === 0) {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            shell.openExternal(url)
+        })
+    }
+});
+
+/************************************
+ * Initialisation page
+ ************************************/
 //On charge les configurations
 getListeConfigurations();
 //On initialise la grille

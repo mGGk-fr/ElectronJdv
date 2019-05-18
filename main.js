@@ -79,7 +79,8 @@ if(Object.keys(configurations).length > 0){
 }
 
 //On déclare les handlers IPC pour les instruction synchrones
-ipcMain.on('commSync', (event, arg, param1, param2) => {
+ipcMain.on('commSync', (event, arg, param1) => {
+    let tabReponse = [];
     switch(arg){
         case "getGrilleHauteur":
             event.returnValue = jeuEnCours.hauteur;
@@ -108,11 +109,8 @@ ipcMain.on('commSync', (event, arg, param1, param2) => {
             jeuEnCours.processCycle();
             event.returnValue = true;
             break;
-        case "getAutoCycleStatus":
-            event.returnValue = autoPlay;
-            break;
         case "getConfigList":
-            let tabReponse = [];
+
             configurations.forEach(function(config, index){
                tabReponse.push({nom:config.name,id:index});
             });
