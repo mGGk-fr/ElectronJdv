@@ -27,9 +27,9 @@ function createWindow () {
             nodeIntegration: true
         }
     });
-    win.loadFile('src/index.html')
+    win.loadFile('src/index.html');
 
-    win.webContents.openDevTools()
+    win.webContents.openDevTools();
 
     win.on('closed', () => {
         win = null
@@ -52,7 +52,7 @@ function declareIntervalAutoCycle(){
 }
 
 //On crée notre jeu de la vie !
-jeuEnCours = new JdV(10,10);
+jeuEnCours = new JdV(20,20);
 
 declareIntervalAutoCycle();
 
@@ -62,8 +62,22 @@ ipcMain.on('commSync', (event, arg, param1, param2) => {
         case "getGrilleHauteur":
             event.returnValue = jeuEnCours.hauteur;
             break;
+        case "setGrilleHauteur":
+            if(param1 > 0){
+                jeuEnCours.hauteur = param1;
+                jeuEnCours.genereGrille(false);
+            }
+            event.returnValue = true;
+            break;
         case "getGrilleLargeur":
             event.returnValue = jeuEnCours.largeur;
+            break;
+        case "setGrilleLargeur":
+            if(param1 > 0){
+                jeuEnCours.largeur = param1;
+                jeuEnCours.genereGrille(false);
+            }
+            event.returnValue = true;
             break;
         case "getVitesseSimulation":
             event.returnValue = vitesseSimulation;

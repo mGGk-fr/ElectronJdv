@@ -1,0 +1,8 @@
+{
+  "name": "Simple 20x20",
+  "hauteur": 20,
+  "largeur": 20,
+  "grille": [
+    "1x1","2x1"
+  ]
+}

@@ -2,8 +2,8 @@
 const { ipcRenderer } = require('electron');
 
 //Elements représentant la configuration de la simulation
-const largeurGrille = document.getElementById("hauteurSimulation");
-const hauteurGrille = document.getElementById("largeurSimulation");
+const largeurGrille = document.getElementById("largeurSimulation");
+const hauteurGrille = document.getElementById("hauteurSimulation");
 const vitesseSimulation = document.getElementById("vitesseSimulation");
 
 //Elements gérant la simulation
@@ -26,7 +26,6 @@ ipcRenderer.on("commAsync", function(event, arg){
 
 //Initialise la grille au démarrage de l'appli
 function initGrille(){
-    let reponse;
     hauteurGrille.value = ipcRenderer.sendSync("commSync","getGrilleHauteur");
     largeurGrille.value = ipcRenderer.sendSync("commSync","getGrilleLargeur");
     vitesseSimulation.value = ipcRenderer.sendSync("commSync", "getVitesseSimulation");
@@ -65,6 +64,16 @@ function chargeGrille(){
     }
 }
 
+//Gere les modification hauteur / largeur
+function handleChangeHauteur(){
+    ipcRenderer.sendSync("commSync", "setGrilleHauteur", hauteurGrille.value);
+    initGrille();
+}
+function handleChangeLargeur(){
+    ipcRenderer.sendSync("commSync", "setGrilleLargeur", largeurGrille.value);
+    initGrille();
+}
+
 //Gere la modification de la vitesse
 function handleChangeVitesse(){
     ipcRenderer.sendSync("commSync","setAutoCycleVitesse", vitesseSimulation.value);
@@ -90,6 +99,12 @@ function nextCycle(){
     ipcRenderer.sendSync("commSync","processOneCycle");
     chargeGrille();
 }
+
+//Gestion des modifications hauteur/largeur
+hauteurGrille.addEventListener("change",handleChangeHauteur, false);
+hauteurGrille.addEventListener("keyup",handleChangeHauteur, false);
+largeurGrille.addEventListener("change",handleChangeLargeur, false);
+largeurGrille.addEventListener("keyup",handleChangeLargeur, false);
 
 //Gestion de la modification de la vitesse
 vitesseSimulation.addEventListener("click", handleChangeVitesse,false);
