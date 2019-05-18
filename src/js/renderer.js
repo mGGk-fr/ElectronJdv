@@ -27,10 +27,9 @@ ipcRenderer.on("commAsync", function(event, arg){
 //Initialise la grille au démarrage de l'appli
 function initGrille(){
     let reponse;
-    reponse = ipcRenderer.sendSync("commSync","getGrilleHauteur");
-    hauteurGrille.value = reponse;
-    reponse = ipcRenderer.sendSync("commSync","getGrilleLargeur");
-    largeurGrille.value = reponse;
+    hauteurGrille.value = ipcRenderer.sendSync("commSync","getGrilleHauteur");
+    largeurGrille.value = ipcRenderer.sendSync("commSync","getGrilleLargeur");
+    vitesseSimulation.value = ipcRenderer.sendSync("commSync", "getVitesseSimulation");
     gameGrid.innerHTML = "";
     for(let i = 0; i < hauteurGrille.value;i++){
         let currentLine = rowTpl.cloneNode();
@@ -66,6 +65,13 @@ function chargeGrille(){
     }
 }
 
+//Gere la modification de la vitesse
+function handleChangeVitesse(){
+    ipcRenderer.sendSync("commSync","setAutoCycleVitesse", vitesseSimulation.value);
+    console.log(vitesseSimulation.value);
+}
+
+//Gere le démarrage et l'arrêt du cycle automatique
 function handleAutoCycle(){
     let response = ipcRenderer.sendSync("commSync","getAutoCycleStatus");
     if(response === true){
@@ -84,6 +90,9 @@ function nextCycle(){
     ipcRenderer.sendSync("commSync","processOneCycle");
     chargeGrille();
 }
+
+//Gestion de la modification de la vitesse
+vitesseSimulation.addEventListener("click", handleChangeVitesse,false);
 
 //Gestion du click sur le bouton pour démarrer automatiquement la génération de cycles
 btnLancerSimulation.addEventListener("click", handleAutoCycle,false);

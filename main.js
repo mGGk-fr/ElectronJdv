@@ -15,8 +15,8 @@ let win;
 //Jeu en cours
 let jeuEnCours;
 let autoPlay = false;
-let timer = 50;
-let timerId;
+let vitesseSimulation = 550;
+let timerId = null;
 
 //Creation de la fenêtre
 function createWindow () {
@@ -43,13 +43,20 @@ function autoPlayCycle(){
     }
 }
 
-//On crée notre jeu de la vie !
-jeuEnCours = new JdV(50,50);
-
 //On déclare le timer d'autoplay
-setInterval(autoPlayCycle, timer);
+function declareIntervalAutoCycle(){
+    if(timerId != null){
+        clearInterval(timerId);
+    }
+    timerId = setInterval(autoPlayCycle, vitesseSimulation);
+}
 
-//On déclare les handlers IPC pour les instruction asynchrones
+//On crée notre jeu de la vie !
+jeuEnCours = new JdV(10,10);
+
+declareIntervalAutoCycle();
+
+//On déclare les handlers IPC pour les instruction synchrones
 ipcMain.on('commSync', (event, arg, param1, param2) => {
     switch(arg){
         case "getGrilleHauteur":
@@ -57,6 +64,9 @@ ipcMain.on('commSync', (event, arg, param1, param2) => {
             break;
         case "getGrilleLargeur":
             event.returnValue = jeuEnCours.largeur;
+            break;
+        case "getVitesseSimulation":
+            event.returnValue = vitesseSimulation;
             break;
         case "getCellStatus":
             event.returnValue = jeuEnCours.getStatutCellule(param1,param2);
@@ -71,6 +81,13 @@ ipcMain.on('commSync', (event, arg, param1, param2) => {
         case "setAutoCycleStatus":
             if(param1 === true || param1 === false){
                 autoPlay = param1;
+            }
+            event.returnValue = true;
+            break;
+        case "setAutoCycleVitesse":
+            if(param1 > 0){
+                vitesseSimulation = param1;
+                declareIntervalAutoCycle();
             }
             event.returnValue = true;
             break;
