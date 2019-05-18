@@ -15,12 +15,9 @@ const JdV = require('./classes/jdv');
 //Fenêtre principale
 let win;
 //Configurations possibles
-let configurations = {};
+let configurations = [];
 //Jeu en cours
 let jeuEnCours;
-let autoPlay = false;
-let vitesseSimulation = 550;
-let timerId = null;
 
 //Creation de la fenêtre
 function createWindow () {
@@ -32,7 +29,8 @@ function createWindow () {
         }
     });
     win.loadFile('src/index.html');
-
+    win.setMenu(null);
+    win.setMenuBarVisibility(false);
     win.webContents.openDevTools();
 
     win.on('closed', () => {
@@ -62,25 +60,10 @@ function chargeListeConfiguration(){
                fichierOK = false;
            }
            if(fichierOK){
-               configurations[file] = config;
+               configurations.push(config);
            }
        }
     });
-}
-
-function autoPlayCycle(){
-    if(autoPlay === true){
-        jeuEnCours.processCycle();
-        win.send("commAsync","callRender");
-    }
-}
-
-//On déclare le timer d'autoplay
-function declareIntervalAutoCycle(){
-    if(timerId != null){
-        clearInterval(timerId);
-    }
-    timerId = setInterval(autoPlayCycle, vitesseSimulation);
 }
 
 //On charge nos configurations
@@ -89,15 +72,11 @@ chargeListeConfiguration();
 //On crée notre jeu de la vie !
 //On regarde si on a au moins une configuration
 if(Object.keys(configurations).length > 0){
-    let configACharger = configurations[Object.keys(configurations)[0]];
-    jeuEnCours = new JdV(configACharger.hauteur,configACharger.largeur);
-    jeuEnCours.chargeConfiguration(configACharger);
+    jeuEnCours = new JdV(configurations[0].hauteur,configurations[0].largeur);
+    jeuEnCours.chargeConfiguration(configurations[0]);
 }else{
     jeuEnCours = new JdV(20,20);
 }
-
-
-declareIntervalAutoCycle();
 
 //On déclare les handlers IPC pour les instruction synchrones
 ipcMain.on('commSync', (event, arg, param1, param2) => {
@@ -122,11 +101,8 @@ ipcMain.on('commSync', (event, arg, param1, param2) => {
             }
             event.returnValue = true;
             break;
-        case "getVitesseSimulation":
-            event.returnValue = vitesseSimulation;
-            break;
-        case "getCellStatus":
-            event.returnValue = jeuEnCours.getStatutCellule(param1,param2);
+        case "getTableauCellule":
+            event.returnValue = jeuEnCours.tableauCellule;
             break;
         case "processOneCycle":
             jeuEnCours.processCycle();
@@ -135,18 +111,23 @@ ipcMain.on('commSync', (event, arg, param1, param2) => {
         case "getAutoCycleStatus":
             event.returnValue = autoPlay;
             break;
-        case "setAutoCycleStatus":
-            if(param1 === true || param1 === false){
-                autoPlay = param1;
-            }
-            event.returnValue = true;
+        case "getConfigList":
+            let tabReponse = [];
+            configurations.forEach(function(config, index){
+               tabReponse.push({nom:config.name,id:index});
+            });
+            event.returnValue = tabReponse;
             break;
-        case "setAutoCycleVitesse":
-            if(param1 > 0){
-                vitesseSimulation = param1;
-                declareIntervalAutoCycle();
+        case "changeConfiguration":
+            if(param1 !== null && typeof (configurations[param1]) !== "undefined"){
+                jeuEnCours.chargeConfiguration(configurations[param1]);
+                event.returnValue = true;
+            }else{
+                event.returnValue = false;
             }
-            event.returnValue = true;
+            break;
+        default:
+            event.returnValue = false;
             break;
 
     }

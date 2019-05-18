@@ -4,40 +4,23 @@
     <meta charset="UTF-8">
     <title>ElectronJdv</title>
     <style>
-        .templates{
-            display: none;
-        }
-        .cellule{
-            display: block;
-            width:5px;
-            height:5px;
+        #cellGrid{
             border: 1px solid #000000;
-            margin: 1px;
-        }
-        .vivante{
-            background-color: #000000;
-        }
-        .ligne{
-            display:flex;
         }
     </style>
 </head>
 <body>
     <h1>ElectronJdv</h1>
-    <div class="templates">
-        <div id="cellTpl" class="cellule"></div>
-        <div id="rowTpl" class="ligne"></div>
-    </div>
     <div class="controls">
-        Configuration : <select id="configurationCellule"></select><br>
+        Configuration : <select id="configurationCellule"></select><button id="btnReset">Reset</button><br>
         Largeur : <input type="number" min="1" max="100" name="largeur" id="largeurSimulation"><br>
         Hauteur : <input type="number" min="1" max="100" name="hauteur" id="hauteurSimulation"><br>
-        Vitesse : <input type="range" name="vitesse" id="vitesseSimulation" min="100" max="1000"><br>
+        Vitesse : <input type="range" name="vitesse" id="selVitesseSimulation" value="10" step="10" min="10" max="500"><br>
         <button id="btnLanceSimulation">Demarrer la simulation</button>
         <button id="btnCycleSuivant">Cycle Suivant</button>
     </div>
     <div id="gameArena">
-
+        <canvas id="cellGrid"></canvas>
     </div>
     <script>
         require('./js/renderer.js')

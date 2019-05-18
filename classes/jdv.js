@@ -27,10 +27,11 @@ class JdV{
         this.genereGrille(true);
         config.grille.forEach(function(element){
            let x, y;
-           x = parseInt(element.split("x")[0]);
-           y = parseInt(element.split("x")[1]);
-           self.tableauCellule[x][y] = true;
+           y = parseInt(element.split("x")[0])-1;
+           x = parseInt(element.split("x")[1])-1;
+           self.tableauCellule[y][x] = true;
         });
+
     }
 
     //Genere une grille vide
@@ -39,6 +40,7 @@ class JdV{
         for(var i = 0; i < this.hauteur; i++){
             let arrayOfCell = [];
             for(var j = 0; j < this.largeur;j++){
+                //arrayOfCell[j] = Math.round((Math.random() * 1) + 0) === 0;
                 if(vide === true){
                     arrayOfCell[j] = false;
                 }else{
@@ -58,11 +60,6 @@ class JdV{
         this.tableauCellule = nouveauTableau;
     }
 
-    //Renvoie le statut d'une cellule
-    getStatutCellule(ligne, colonne){
-        return this.tableauCellule[ligne][colonne];
-    }
-
     //Exécute un cycle
     processCycle(){
         let nouveauTableau = [];
@@ -71,12 +68,16 @@ class JdV{
             for(let j = 0; j < this.largeur; j++){
                 let nbCellEnVie = this.getNombreCelluleVivante(i,j);
                 if(this.tableauCellule[i][j] === true){
-                    if(nbCellEnVie < 2 || nbCellEnVie > 3){
+                    if(nbCellEnVie === 2 || nbCellEnVie === 3){
+                        tableauLigne[j] = true;
+                    }else{
                         tableauLigne[j] = false;
                     }
                 }else{
                     if(nbCellEnVie === 3){
                         tableauLigne[j] = true;
+                    }else{
+                        tableauLigne[j] = false;
                     }
                 }
             }
@@ -125,22 +126,21 @@ class JdV{
 
     //Renvoie l'état d'une cellule, gère le cas des cellules aux bords de la zone
     getEtatCelluleAdjacente(ligne, colonne){
-
-        let xFinal = ligne;
-        let yFinal = colonne;
-        if(xFinal < 0){
-            xFinal = this.largeur-1;
+        let ligneFinale = ligne;
+        let colonneFinale = colonne;
+        if(ligneFinale < 0){
+            ligneFinale = this.hauteur-1;
         }
-        if(xFinal >= this.largeur){
-            xFinal = 0;
+        if(ligneFinale >= this.hauteur){
+            ligneFinale = 0;
         }
-        if(yFinal < 0){
-            yFinal = this.hauteur-1;
+        if(colonneFinale < 0){
+            colonneFinale = this.largeur-1;
         }
-        if(yFinal >= this.hauteur){
-            yFinal = 0;
+        if(colonneFinale >= this.largeur){
+            colonneFinale = 0;
         }
-        return this.tableauCellule[xFinal][yFinal];
+        return this.tableauCellule[ligneFinale][colonneFinale];
 
     }
 }
