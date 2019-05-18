@@ -19,6 +19,20 @@ class JdV{
         this.genereGrille(true);
     }
 
+    //Charge une configuration
+    chargeConfiguration(config){
+        var self = this;
+        this.hauteur = config.hauteur;
+        this.largeur = config.largeur;
+        this.genereGrille(true);
+        config.grille.forEach(function(element){
+           let x, y;
+           x = parseInt(element.split("x")[0]);
+           y = parseInt(element.split("x")[1]);
+           self.tableauCellule[x][y] = true;
+        });
+    }
+
     //Genere une grille vide
     genereGrille(vide){
         let nouveauTableau = [];

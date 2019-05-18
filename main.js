@@ -7,11 +7,15 @@
 
 //Import des dépendances
 const { app, BrowserWindow, ipcMain } = require('electron');
+const fs = require('fs');
+
 //Classes persos
 const JdV = require('./classes/jdv');
 
 //Fenêtre principale
 let win;
+//Configurations possibles
+let configurations = {};
 //Jeu en cours
 let jeuEnCours;
 let autoPlay = false;
@@ -36,6 +40,34 @@ function createWindow () {
     })
 }
 
+function chargeListeConfiguration(){
+    //On parcours les fichiers json du dossier configs
+    fs.readdirSync("./configs/").forEach(file => {
+        let fichierOK = true;
+       //on vérifie que c'est bien un fichier json que nous lisons
+       if(file.endsWith("json")){
+           let rawFile = fs.readFileSync("./configs/"+file);
+           let config = JSON.parse(rawFile);
+           //On contrôle qu'on a tous les paramètres
+           if(typeof (config.name) === undefined){
+               fichierOK = false;
+           }
+           if(typeof (config.hauteur) === "undefined"){
+               fichierOK = false;
+           }
+           if(typeof (config.largeur) === "undefined"){
+               fichierOK = false;
+           }
+           if(typeof (config.grille) === "undefined" || config.grille.length === 0){
+               fichierOK = false;
+           }
+           if(fichierOK){
+               configurations[file] = config;
+           }
+       }
+    });
+}
+
 function autoPlayCycle(){
     if(autoPlay === true){
         jeuEnCours.processCycle();
@@ -51,8 +83,19 @@ function declareIntervalAutoCycle(){
     timerId = setInterval(autoPlayCycle, vitesseSimulation);
 }
 
+//On charge nos configurations
+chargeListeConfiguration();
+
 //On crée notre jeu de la vie !
-jeuEnCours = new JdV(20,20);
+//On regarde si on a au moins une configuration
+if(Object.keys(configurations).length > 0){
+    let configACharger = configurations[Object.keys(configurations)[0]];
+    jeuEnCours = new JdV(configACharger.hauteur,configACharger.largeur);
+    jeuEnCours.chargeConfiguration(configACharger);
+}else{
+    jeuEnCours = new JdV(20,20);
+}
+
 
 declareIntervalAutoCycle();
 

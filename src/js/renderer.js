@@ -24,7 +24,12 @@ ipcRenderer.on("commAsync", function(event, arg){
    }
 });
 
-//Initialise la grille au démarrage de l'appli
+//Charge la liste des configurations dans le select
+function getListeConfigurations(){
+
+}
+
+//Initialise la grille html
 function initGrille(){
     hauteurGrille.value = ipcRenderer.sendSync("commSync","getGrilleHauteur");
     largeurGrille.value = ipcRenderer.sendSync("commSync","getGrilleLargeur");
