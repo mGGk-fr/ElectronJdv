@@ -36,9 +36,9 @@ class JdV{
     //Genere une grille vide
     genereGrille(vide){
         let nouveauTableau = [];
-        for(var i = 0; i < this.hauteur; i++){
+        for(var i = 0; i < this.largeur; i++){
             let arrayOfCell = [];
-            for(var j = 0; j < this.largeur;j++){
+            for(var j = 0; j < this.hauteur;j++){
                 //arrayOfCell[j] = Math.round((Math.random() * 1) + 0) === 0;
                 if(vide === true){
                     arrayOfCell[j] = false;
@@ -62,9 +62,9 @@ class JdV{
     //Exécute un cycle
     processCycle(){
         let nouveauTableau = [];
-        for(let i = 0; i < this.hauteur; i++){
+        for(let i = 0; i < this.largeur; i++){
             let tableauLigne = [];
-            for(let j = 0; j < this.largeur; j++){
+            for(let j = 0; j < this.hauteur; j++){
                 let nbCellEnVie = this.getNombreCelluleVivante(i,j);
                 if(this.tableauCellule[i][j] === true){
                     tableauLigne[j] = nbCellEnVie === 2 || nbCellEnVie === 3;

@@ -20,8 +20,5 @@
   "devDependencies": {
     "electron": "^5.0.1",
     "eslint": "^5.16.0"
-  },
-  "dependencies": {
-    "vue": "^2.6.10"
   }
 }
