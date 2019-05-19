@@ -37,8 +37,14 @@ function createWindow () {
 
     win.on('closed', () => {
         win = null
-    })
+    });
 }
+
+//gere le cas de certains process qui restent en mémoire après fermeture de l'appli
+app.once('window-all-closed', app.quit);
+app.once('before-quit', () => {
+    win.removeAllListeners('close');
+});
 
 //Chargement de la liste des configurations depuis le dossier config
 function chargeListeConfiguration(){
