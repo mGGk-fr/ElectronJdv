@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>ElectronJdv</title>
@@ -13,22 +13,27 @@
     </style>
 </head>
 <body>
-    <h1>ElectronJdv</h1>
-    <p>Code par Guillaume Arino / <a class="outLink" href="https://mggk.net">Website</a> / <a class="outLink" href="https://github.com/mGGk-fr">GitHub</a></p>
-    <p>Configurations de : <a class="outLink" href="https://bitstorm.org/gameoflife/">Bitstorm.org</a></p>
-    <div class="controls">
-        Configuration : <select id="configurationCellule"></select><button id="btnReset">Reset</button><br>
-        Largeur : <input type="number" min="1" max="100" name="largeur" id="largeurSimulation"><br>
-        Hauteur : <input type="number" min="1" max="100" name="hauteur" id="hauteurSimulation"><br>
-        Vitesse : <input type="range" name="vitesse" id="selVitesseSimulation" value="500" step="10" min="10" max="1000"><br>
-        <button id="btnLanceSimulation">Demarrer la simulation</button>
-        <button id="btnCycleSuivant">Cycle Suivant</button>
-    </div>
-    <div id="gameArena">
-        <canvas id="cellGrid"></canvas>
+    <div id="app">
+        <h1>ElectronJdv</h1>
+        <p>Code par Guillaume Arino / <a class="outLink" href="https://mggk.net">Website</a> / <a class="outLink" href="https://github.com/mGGk-fr">GitHub</a></p>
+        <p>Configurations de : <a class="outLink" href="https://bitstorm.org/gameoflife/">Bitstorm.org</a></p>
+        <div class="controls">
+            Configuration : <select id="configurationCellule"></select><button id="btnReset">Reset</button><br>
+            Largeur : <input type="number" min="1" max="100" name="largeur" id="largeurSimulation" v-model="largeurGrille" v-on:change:keyup="setLargeurGrille" v-on:keyup="setLargeurGrille" v-on:mouseup="setLargeurGrille"><br>
+            Hauteur : <input type="number" min="1" max="100" name="hauteur" id="hauteurSimulation" v-model="hauteurGrille" v-on:change="setHauteurGrille" v-on:keyup="setHauteurGrille" v-on:mouseup="setHauteurGrille"><br>
+            Vitesse : <input type="range" name="vitesse" id="selVitesseSimulation" value="500" step="10" min="10" max="1000" v-model="vitesseSimulation"><br>
+            <button id="btnLanceSimulation">Demarrer la simulation</button>
+            <button id="btnCycleSuivant">Cycle Suivant</button>
+        </div>
+        <div id="gameArena">
+            <canvas ref="canvasCellGrid" id="cellGrid"></canvas>
+        </div>
     </div>
     <script>
-        require('./js/renderer.js')
+        window.Vue = require('./libs/vue');
+        require('./js/vue_app.js');
+        //require('./js/renderer.js');
+
     </script>
 </body>
 </html>
