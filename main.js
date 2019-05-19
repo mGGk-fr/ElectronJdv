@@ -31,9 +31,11 @@ function createWindow () {
         }
     });
     win.loadFile('src/index.html');
+    //Masque le menu supérieur
     win.setMenu(null);
     win.setMenuBarVisibility(false);
-    win.webContents.openDevTools();
+    //Affiche les devtools
+    //win.webContents.openDevTools();
 
     win.on('closed', () => {
         win = null
@@ -146,6 +148,36 @@ ipcMain.on('commSync', (event, arg, param1, param2) => {
                 event.returnValue = true;
             }else{
                 event.returnValue = false
+            }
+            break;
+        case "sauveConfiguration":
+            if(param1 !== null && param1 !== "" && typeof (param1) !== "undefined"){
+                let nouvelleConfig = {};
+                let nouveauTableau = [];
+                nouvelleConfig.name = param1;
+                nouvelleConfig.hauteur = jeuEnCours.hauteur;
+                nouvelleConfig.largeur = jeuEnCours.largeur;
+                for(let i = 0; i < nouvelleConfig.hauteur;i++){
+                    for(let j = 0; j < nouvelleConfig.largeur;j++){
+                        if(jeuEnCours.tableauCellule[i][j] === true){
+                            nouveauTableau.push((j+1)+"x"+(i+1));
+                        }
+                    }
+                }
+                nouvelleConfig.grille = nouveauTableau;
+                //On defini le nom du fichier par nomDeLaConfig et on remplace les caracteres spéciaux par des _
+                let nomFichier = param1.replace(/[^a-zA-Z0-9]/g,'_');
+                //On converti l'objet en JSON
+                let jsonObjet = JSON.stringify(nouvelleConfig);
+                //On enregistre le fichier
+                fs.writeFile("./configs/"+nomFichier+".json",jsonObjet,'utf8',function(err){
+                    if (err) {
+                        event.returnValue = [false,0];
+                    }else{
+                        configurations.push(nouvelleConfig);
+                        event.returnValue = [true, configurations.length-1];
+                    }
+                });
             }
             break;
         default:

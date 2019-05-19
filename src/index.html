@@ -27,9 +27,12 @@
             Hauteur : <input type="number" min="1" max="100" name="hauteur" id="hauteurSimulation" v-model="hauteurGrille" v-on:change="setHauteurGrille" v-on:keyup="setHauteurGrille" v-on:mouseup="setHauteurGrille"><br>
             Vitesse : <input type="range" name="vitesse" id="selVitesseSimulation" value="500" step="10" min="10" max="1000" v-model="vitesseSimulation" v-on:change="changeVitesseSimulation">
             Taille Cellule : <input type="number" name="tailleCellule" id="selTailleCellule" step="1" min="1" max="20" v-model="tailleCellule" v-on:change="initGrille" v-on:mouseup="initGrille">
-            Afficher repère : <input type="checkbox" v-model="afficheRepere"><br>
+            Afficher repère : <input type="checkbox" v-model="afficheRepere" v-on:change="chargeGrille"><br>
             <button id="btnLanceSimulation" ref="btnControlSimulation" v-on:click="demarreArretSimulation">Demarrer la simulation</button>
             <button id="btnCycleSuivant" ref="btnCycleSuivant" v-on:click="cycleSuivant">Cycle Suivant</button>
+            <button id="btnSaveConfigLocal" ref="btnCycleSuivant" v-on:click="sauveConfigLocale">Enregistrer la grille en local</button>
+            <!--<button id="btnSaveConfigExterne" ref="btnCycleSuivant" v-on:click="sauveConfigExterne">Exporter la grille en json</button>
+            <button id="btnLoadConfig" ref="btnCycleSuivant" v-on:click="loadConfig">Importer une grille</button>-->
         </div>
         <div id="gameArena">
             <canvas ref="canvasCellGrid" id="cellGrid" v-on:click="toggleCellule"></canvas>

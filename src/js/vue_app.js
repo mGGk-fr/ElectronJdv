@@ -8,9 +8,11 @@
 //Require des libs electron
 const { ipcRenderer } = require('electron');
 const shell = require('electron').shell;
+const Dialogs = require('dialogs');
+const dialogs = Dialogs();
 
 //Déclaration de l'élément vue
-new Vue({
+new Vue({ // eslint-disable-line no-undef
     el: '#app',
     data:{
         hauteurGrille: 0,
@@ -75,7 +77,7 @@ new Vue({
                 context.moveTo(0,i*this.tailleCellule);
                 context.lineTo(this.$refs['canvasCellGrid'].width, i*this.tailleCellule);
             }
-            context.lineWidth = 0.1;
+            context.lineWidth = 0.2;
             context.strokeStyle = 'black';
             context.stroke();
         },
@@ -97,8 +99,27 @@ new Vue({
                 this.getLargeurGrille();
                 this.initGrille();
             }else{
-                alert("Une erreur est survenue durant le changement de configuration");
+                dialogs.alert("Une erreur est survenue durant le changement de configuration");
             }
+        },
+        //Sauvegarde la grille actuelle dans le dossier config
+        sauveConfigLocale: function(){
+            let self = this;
+            if(this.isPlaying){
+                this.demarreArretSimulation();
+            }
+            dialogs.prompt("Veuillez donner un nom à votre configuration","",function(text){
+               if(text !== null && text !== "" && typeof (text) !== "undefined"){
+                   let reponse = ipcRenderer.sendSync("commSync","sauveConfiguration",text);
+                   if(reponse[0] === true){
+                       self.getListeConfigurations();
+                       self.configurationEnCours = reponse[1];
+                       dialogs.alert("Configuration enregistrée");
+                   }else{
+                       dialogs.alert("Une erreur est survenue durant l'enregistrement");
+                   }
+               }
+            });
         },
         /*************************************
          * Methodes la configuration de la simulation
@@ -171,12 +192,11 @@ new Vue({
             //Avec ces données, on peux determiner la cellule cliquée
             let colonne = Math.floor((x-2)/this.tailleCellule);
             let ligne = Math.floor((y-2)/this.tailleCellule);
-            console.log(colonne+"/"+ligne);
             let reponse = ipcRenderer.sendSync("commSync","toggleCellule",colonne,ligne);
             if(reponse === true){
                 this.chargeGrille();
             }else{
-                alert("Une erreur est survenue code : ERR-RET-TOGGCEL");
+                dialogs.alert("Une erreur est survenue code : ERR-RET-TOGGCEL");
             }
         }
 
