@@ -16,6 +16,8 @@ const JdV = require('./classes/jdv');
 let win;
 //Configurations possibles
 let configurations = [];
+//Configuration en cours
+let configEnCours;
 //Jeu en cours
 let jeuEnCours;
 
@@ -74,6 +76,7 @@ chargeListeConfiguration();
 if(Object.keys(configurations).length > 0){
     jeuEnCours = new JdV(configurations[0].hauteur,configurations[0].largeur);
     jeuEnCours.chargeConfiguration(configurations[0]);
+    configEnCours = 0;
 }else{
     jeuEnCours = new JdV(20,20);
 }
@@ -110,11 +113,13 @@ ipcMain.on('commSync', (event, arg, param1) => {
             event.returnValue = true;
             break;
         case "getConfigList":
-
             configurations.forEach(function(config, index){
                tabReponse.push({nom:config.name,id:index});
             });
             event.returnValue = tabReponse;
+            break;
+        case "getConfigEnCours":
+            event.returnValue = configEnCours;
             break;
         case "changeConfiguration":
             if(param1 !== null && typeof (configurations[param1]) !== "undefined"){

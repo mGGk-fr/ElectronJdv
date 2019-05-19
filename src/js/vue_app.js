@@ -7,7 +7,8 @@ new Vue({
         hauteurGrille: 0,
         largeurGrille: 0,
         tableauCellule: [],
-        configuration: "none",
+        configurations: [],
+        configurationEnCours : "null",
         vitesseSimulation: 500,
         timerId : null,
         isPlaying: false,
@@ -49,8 +50,26 @@ new Vue({
         /*************************************
          * Methodes gerant les configurations
          *************************************/
+        //Recupere la liste des configurations
+        getListeConfigurations: function(){
+            this.configurations = ipcRenderer.sendSync("commSync", "getConfigList");
+        },
+        //Récupère la configuration active
+        getCurrentConfiguration: function(){
+            this.configurationEnCours = ipcRenderer.sendSync("commSync", "getConfigEnCours");
+        },
+        //Défini la configuration à charger
+        setCurrentConfiguration: function(){
+            if(ipcRenderer.sendSync("commSync","changeConfiguration",this.configurationEnCours)){
+                this.getHauteurGrille();
+                this.getLargeurGrille();
+                this.initGrille();
+            }else{
+                alert("Une erreur est survenue durant le changement de configuration");
+            }
+        },
         /*************************************
-         * Methodes gerant les flux de données
+         * Methodes la configuration de la simulation
          *************************************/
         //Charge la hauteur de la grille
         getHauteurGrille: function(){
@@ -74,9 +93,37 @@ new Vue({
         chargeTableauCellule: function(){
             this.tableauCellule = ipcRenderer.sendSync("commSync", "getTableauCellule");
         },
+        changeVitesseSimulation: function(){
+            clearInterval(this.timerId);
+            if(this.isPlaying){
+                this.timerId = setInterval(this.cycleSuivant,this.vitesseSimulation);
+            }
+        },
+        /****************************************
+         * Méthodes controlant la simulation
+         ***************************************/
+        demarreArretSimulation: function(){
+            if(this.isPlaying){
+                clearInterval(this.timerId);
+                this.$refs['btnControlSimulation'].innerText = "Démarrer la simulation";
+                this.$refs['btnCycleSuivant'].disabled = false;
+                this.isPlaying = false;
+            }else{
+                this.timerId = setInterval(this.cycleSuivant,this.vitesseSimulation);
+                this.$refs['btnControlSimulation'].innerText = "Arrêter la simulation";
+                this.$refs['btnCycleSuivant'].disabled = false;
+                this.isPlaying = true;
+            }
+        },
+        cycleSuivant: function(){
+            ipcRenderer.sendSync("commSync","processOneCycle");
+            this.chargeGrille();
+        }
 
     },
     mounted: function(){
+        this.getListeConfigurations();
+        this.getCurrentConfiguration();
         this.getHauteurGrille();
         this.getLargeurGrille();
         this.initGrille();
