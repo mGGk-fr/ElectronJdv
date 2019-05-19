@@ -30,7 +30,7 @@
             Afficher repère : <input type="checkbox" v-model="afficheRepere" v-on:change="chargeGrille"><br>
             <button id="btnLanceSimulation" ref="btnControlSimulation" v-on:click="demarreArretSimulation">Demarrer la simulation</button>
             <button id="btnCycleSuivant" ref="btnCycleSuivant" v-on:click="cycleSuivant">Cycle Suivant</button>
-            <button id="btnSaveConfigLocal" ref="btnCycleSuivant" v-on:click="sauveConfigLocale">Enregistrer la grille en local</button>
+            <button id="btnSaveConfigLocal" ref="btnSauveConfig" v-on:click="sauveConfigLocale">Enregistrer la grille en local</button>
             <!--<button id="btnSaveConfigExterne" ref="btnCycleSuivant" v-on:click="sauveConfigExterne">Exporter la grille en json</button>
             <button id="btnLoadConfig" ref="btnCycleSuivant" v-on:click="loadConfig">Importer une grille</button>-->
         </div>

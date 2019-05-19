@@ -91,6 +91,7 @@ if(Object.keys(configurations).length > 0){
 }
 
 //On déclare les handlers IPC pour les instruction synchrones
+//On gère les différentes demandes de l'interface
 ipcMain.on('commSync', (event, arg, param1, param2) => {
     let tabReponse = [];
     switch(arg){

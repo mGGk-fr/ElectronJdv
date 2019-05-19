@@ -161,11 +161,13 @@ new Vue({ // eslint-disable-line no-undef
                 clearInterval(this.timerId);
                 this.$refs['btnControlSimulation'].innerText = "Démarrer la simulation";
                 this.$refs['btnCycleSuivant'].disabled = false;
+                this.$refs['btnSauveConfig'].disabled = false;
                 this.isPlaying = false;
             }else{
                 this.timerId = setInterval(this.cycleSuivant,this.vitesseSimulation);
                 this.$refs['btnControlSimulation'].innerText = "Arrêter la simulation";
                 this.$refs['btnCycleSuivant'].disabled = true;
+                this.$refs['btnSauveConfig'].disabled = true;
                 this.isPlaying = true;
             }
         },

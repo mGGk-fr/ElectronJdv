@@ -1,6 +1,16 @@
 <html>
     <head>
         <title>README ElectronJDV</title>
+        <style>
+            .tab{
+                min-width: 10px;
+                display: contents;
+            }
+            .code{
+                border: 1px solid #000000;
+                padding: 10px;
+            }
+        </style>
     </head>
     <body>
         <h1>Bienvenue dans ElectronJDV</h1>
@@ -13,7 +23,7 @@
                 <li>Le bouton Reset permet de réinitialiser la configuration</li>
                 <li>Les champs hauteur et largeur vous permettent de modifier la taille de la grille</li>
                 <li>Le curseur vitesse permet de regler la vitesse de simulation une fois la simulation démarrée</li>
-                <li>Le curseur taille cellule permet de regler la taille de la cellule</li>
+                <li>Le champ taille cellule permet de regler la taille de la cellule (cette taille est exprimée en pixels)</li>
                 <li>La case à cocher Afficher repère permet d'afficher ou non une grille</li>
                 <li>Le bouton démarrer la simulation permet de lancer/arrêter la simulation en continue</li>
                 <li>Le bouton cycle suivant permet d'aller au prochain cycle et d'observer la simulation pas à pas</li>
@@ -22,8 +32,36 @@
         <h3>Grille de jeu</h3>
             <ul>
                 <li>La grille de jeu affiche la simulation</li>
+                <li>La grille de jeu est torique (bouclée), les bord gauche/droit et haut/bas sont connectés deux à deux</li>
                 <li>Vous pouvez cliquer sur les cellules pour les rendre vivantes ou mortes</li>
             </ul>
+        <h3>Edition de grilles</h3>
+        <p>Vous disposez de deux possibilitées pour créer vos propres grilles : </p>
+        <h4>Via l'application en elle même</h4>
+        <p>Cliquez sur les cellules que vous souhaitez vivantes ou mortes puis cliquer sur le bouton "Enregistrer la grille en local". Votre grille sera enregistrée dans un fichier dans le dossier "configs" et sera immédiatement disponible et à chaque redémarrage de l'application</p>
+        <h4>Via une édition manuelle</h4>
+        <p>Il suffit de créer un fichier .json en renseignant les informations suivantes :</p>
+        <ul>
+            <li>name: Nom de la configuration</li>
+            <li>hauteur: Hauteur de la grille</li>
+            <li>largeur : Largeur de la grille</li>
+            <li>Grille : tableau de chaines contenant les coordonées des cellules vivantes (chaines au format '"ligne"x"colonne"')</li>
+        </ul>
+        <p>Vous pouvez-vous inspirer des fichiers de configurations fournis pour former vos configuration, le fichier doit ressembler à cela (les sauts de ligne ne sont pas obligatoires, ils sont présents pour des raisons de lisibilité) :</p>
+        <div class="code">
+            {<br>
+                <div class="tab">&nbsp;&nbsp;&nbsp;&nbsp;</div>"name": "Exploder",<br>
+                <div class="tab">&nbsp;&nbsp;&nbsp;&nbsp;</div>"hauteur": 30,<br>
+                <div class="tab">&nbsp;&nbsp;&nbsp;&nbsp;</div>"largeur": 30,<br>
+                <div class="tab">&nbsp;&nbsp;&nbsp;&nbsp;</div>"grille": [<br>
+                <div class="tab">&nbsp;&nbsp;&nbsp;&nbsp;</div><div class="tab">&nbsp;&nbsp;&nbsp;&nbsp;</div>"10x10","10x12","10x14",<br>
+                <div class="tab">&nbsp;&nbsp;&nbsp;&nbsp;</div><div class="tab">&nbsp;&nbsp;&nbsp;&nbsp;</div>"11x10","11x14",<br>
+                <div class="tab">&nbsp;&nbsp;&nbsp;&nbsp;</div><div class="tab">&nbsp;&nbsp;&nbsp;&nbsp;</div>"12x10","12x14",<br>
+                <div class="tab">&nbsp;&nbsp;&nbsp;&nbsp;</div><div class="tab">&nbsp;&nbsp;&nbsp;&nbsp;</div>"13x10","13x14",<br>
+                <div class="tab">&nbsp;&nbsp;&nbsp;&nbsp;</div><div class="tab">&nbsp;&nbsp;&nbsp;&nbsp;</div>"14x10","14x12","14x14"<br>
+                <div class="tab">&nbsp;&nbsp;&nbsp;&nbsp;</div>]<br>
+            }
+        </div>
         <h2>Crédits</h2>
         <p>Code : Guillaume Arino (arino.guillaume@gmail.com) - Site Web : <a href="https://mggk.net">https://mggk.net</a> - GitHub : <a href="https://github.com/mGGk-fr">https://github.com/mGGk-fr</a></p>
         <p>Configurations de départ récupérés depuis le site Bitstorm : <a href="https://bitstorm.org/gameoflife/">https://bitstorm.org/gameoflife/</a></p>
