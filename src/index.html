@@ -15,22 +15,24 @@
 <body>
     <div id="app">
         <h1>ElectronJdv</h1>
-        <p>Code par Guillaume Arino / <a class="outLink" href="https://mggk.net">Website</a> / <a class="outLink" href="https://github.com/mGGk-fr">GitHub</a></p>
-        <p>Configurations de : <a class="outLink" href="https://bitstorm.org/gameoflife/">Bitstorm.org</a></p>
+        <p>Code par Guillaume Arino / <a class="outLink" href="https://mggk.net">Website</a> / <a class="outLink" href="https://github.com/mGGk-fr">GitHub</a>
+         - Configurations de : <a class="outLink" href="https://bitstorm.org/gameoflife/">Bitstorm.org</a></p>
         <div class="controls">
             Configuration :
             <select id="configurationCellule" v-model="configurationEnCours" v-on:change="setCurrentConfiguration">
                 <option v-for="config in configurations" :value="config.id">{{config.nom}}</option>
             </select>
-            <button id="btnReset">Reset</button><br>
-            Largeur : <input type="number" min="1" max="100" name="largeur" id="largeurSimulation" v-model="largeurGrille" v-on:change:keyup="setLargeurGrille" v-on:keyup="setLargeurGrille" v-on:mouseup="setLargeurGrille"><br>
+            <button id="btnReset" v-on:click="resetSimulation">Reset</button><br>
+            Largeur : <input type="number" min="1" max="100" name="largeur" id="largeurSimulation" v-model="largeurGrille" v-on:change:keyup="setLargeurGrille" v-on:keyup="setLargeurGrille" v-on:mouseup="setLargeurGrille">
             Hauteur : <input type="number" min="1" max="100" name="hauteur" id="hauteurSimulation" v-model="hauteurGrille" v-on:change="setHauteurGrille" v-on:keyup="setHauteurGrille" v-on:mouseup="setHauteurGrille"><br>
-            Vitesse : <input type="range" name="vitesse" id="selVitesseSimulation" value="500" step="10" min="10" max="1000" v-model="vitesseSimulation" v-on:change="changeVitesseSimulation"><br>
+            Vitesse : <input type="range" name="vitesse" id="selVitesseSimulation" value="500" step="10" min="10" max="1000" v-model="vitesseSimulation" v-on:change="changeVitesseSimulation">
+            Taille Cellule : <input type="number" name="tailleCellule" id="selTailleCellule" step="1" min="1" max="20" v-model="tailleCellule" v-on:change="initGrille" v-on:mouseup="initGrille">
+            Afficher repère : <input type="checkbox" v-model="afficheRepere"><br>
             <button id="btnLanceSimulation" ref="btnControlSimulation" v-on:click="demarreArretSimulation">Demarrer la simulation</button>
             <button id="btnCycleSuivant" ref="btnCycleSuivant" v-on:click="cycleSuivant">Cycle Suivant</button>
         </div>
         <div id="gameArena">
-            <canvas ref="canvasCellGrid" id="cellGrid"></canvas>
+            <canvas ref="canvasCellGrid" id="cellGrid" v-on:click="toggleCellule"></canvas>
         </div>
     </div>
     <script>

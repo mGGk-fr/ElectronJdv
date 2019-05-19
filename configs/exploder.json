@@ -1,7 +1,7 @@
 {
   "name": "Exploder",
-  "hauteur": 50,
-  "largeur": 50,
+  "hauteur": 30,
+  "largeur": 30,
   "grille": [
     "10x10","10x12","10x14",
     "11x10","11x14",

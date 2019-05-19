@@ -116,6 +116,7 @@ class JdV{
     }
 
     //Renvoie l'état d'une cellule, gère le cas des cellules aux bords de la zone
+    //Les contrôles permettent de bloucler la grille et de la relier bord à bord
     getEtatCelluleAdjacente(ligne, colonne){
         let ligneFinale = ligne;
         let colonneFinale = colonne;

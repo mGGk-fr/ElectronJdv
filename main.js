@@ -24,22 +24,23 @@ let jeuEnCours;
 //Creation de la fenêtre
 function createWindow () {
     win = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1024,
+        height: 768,
         webPreferences: {
             nodeIntegration: true
         }
     });
     win.loadFile('src/index.html');
-    /*win.setMenu(null);
-    win.setMenuBarVisibility(false);*/
-    win.webContents.openDevTools();
+    win.setMenu(null);
+    win.setMenuBarVisibility(false);
+    //win.webContents.openDevTools();
 
     win.on('closed', () => {
         win = null
     })
 }
 
+//Chargement de la liste des configurations depuis le dossier config
 function chargeListeConfiguration(){
     //On parcours les fichiers json du dossier configs
     fs.readdirSync("./configs/").forEach(file => {
@@ -135,8 +136,6 @@ ipcMain.on('commSync', (event, arg, param1) => {
 
     }
 });
-
-
 
 //Création de la fenêtre lorsque node est chargé
 app.on('ready', createWindow);
