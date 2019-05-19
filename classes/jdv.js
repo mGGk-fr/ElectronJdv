@@ -26,8 +26,8 @@ class JdV{
         this.genereGrille(true);
         config.grille.forEach(function(element){
            let x, y;
-           y = parseInt(element.split("x")[0])-1;
-           x = parseInt(element.split("x")[1])-1;
+           x = parseInt(element.split("x")[0])-1;
+           y = parseInt(element.split("x")[1])-1;
            self.tableauCellule[y][x] = true;
         });
 
@@ -117,7 +117,7 @@ class JdV{
 
     //Renvoie l'état d'une cellule, gère le cas des cellules aux bords de la zone
     //Les contrôles permettent de bloucler la grille et de la relier bord à bord
-    getEtatCelluleAdjacente(ligne, colonne){
+    getEtatCelluleAdjacente(colonne, ligne){
         let ligneFinale = ligne;
         let colonneFinale = colonne;
         if(ligneFinale < 0){
@@ -132,7 +132,7 @@ class JdV{
         if(colonneFinale >= this.largeur){
             colonneFinale = 0;
         }
-        return this.tableauCellule[ligneFinale][colonneFinale];
+        return this.tableauCellule[colonneFinale][ligneFinale];
 
     }
 }

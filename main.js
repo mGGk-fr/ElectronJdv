@@ -33,7 +33,7 @@ function createWindow () {
     win.loadFile('src/index.html');
     win.setMenu(null);
     win.setMenuBarVisibility(false);
-    //win.webContents.openDevTools();
+    win.webContents.openDevTools();
 
     win.on('closed', () => {
         win = null
@@ -83,7 +83,7 @@ if(Object.keys(configurations).length > 0){
 }
 
 //On déclare les handlers IPC pour les instruction synchrones
-ipcMain.on('commSync', (event, arg, param1) => {
+ipcMain.on('commSync', (event, arg, param1, param2) => {
     let tabReponse = [];
     switch(arg){
         case "getGrilleHauteur":
@@ -128,6 +128,18 @@ ipcMain.on('commSync', (event, arg, param1) => {
                 event.returnValue = true;
             }else{
                 event.returnValue = false;
+            }
+            break;
+        case "toggleCellule":
+            if(param2 < jeuEnCours.hauteur && param1 < jeuEnCours.largeur){
+                if(jeuEnCours.tableauCellule[param1][param2] === true){
+                    jeuEnCours.tableauCellule[param1][param2] = false;
+                }else{
+                    jeuEnCours.tableauCellule[param1][param2] = true;
+                }
+                event.returnValue = true;
+            }else{
+                event.returnValue = false
             }
             break;
         default:

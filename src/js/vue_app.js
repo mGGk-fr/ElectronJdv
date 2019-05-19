@@ -44,8 +44,10 @@ new Vue({
             }
             for(let i = 0; i < this.largeurGrille;i++){
                 for(let j = 0; j < this.hauteurGrille; j++){
-                    if(this.tableauCellule[i][j]){
-                        this.drawCell(context2D, i,j,"black");
+                    if(typeof (this.tableauCellule[i]) !== "undefined" && typeof (this.tableauCellule[i][j]) !== "undefined"){
+                        if(this.tableauCellule[i][j] === true){
+                            this.drawCell(context2D, i,j,"black");
+                        }
                     }
                 }
             }
@@ -55,7 +57,7 @@ new Vue({
             context.clearRect(0,0,this.$refs['canvasCellGrid'].width,this.$refs['canvasCellGrid'].height);
         },
         //Dessine une cellule
-        drawCell: function(context, ligne, colonne, color){
+        drawCell: function(context, colonne, ligne, color){
             context.fillStyle = color;
             context.fillRect(colonne*this.tailleCellule,ligne*this.tailleCellule,this.tailleCellule,this.tailleCellule);
         },
@@ -66,12 +68,12 @@ new Vue({
             //Lignes verticales
             for(let i = 1; i< this.largeurGrille;i++){
                 context.moveTo(i*this.tailleCellule,0);
-                context.lineTo(i*this.tailleCellule,this.hauteurGrille*this.tailleCellule);
+                context.lineTo(i*this.tailleCellule,this.$refs['canvasCellGrid'].height);
             }
             //Lignes horizontales
             for(let i = 1; i< this.hauteurGrille;i++){
                 context.moveTo(0,i*this.tailleCellule);
-                context.lineTo(this.hauteurGrille*this.tailleCellule, i*this.tailleCellule);
+                context.lineTo(this.$refs['canvasCellGrid'].width, i*this.tailleCellule);
             }
             context.lineWidth = 0.1;
             context.strokeStyle = 'black';
@@ -167,8 +169,15 @@ new Vue({
             let x = event.clientX - rect.left;
             let y = event.clientY - rect.top;
             //Avec ces données, on peux determiner la cellule cliquée
-            let colonne = ((this.largeurGrille/this.tailleCellule));
-            console.log(colonne);
+            let colonne = Math.floor((x-2)/this.tailleCellule);
+            let ligne = Math.floor((y-2)/this.tailleCellule);
+            console.log(colonne+"/"+ligne);
+            let reponse = ipcRenderer.sendSync("commSync","toggleCellule",colonne,ligne);
+            if(reponse === true){
+                this.chargeGrille();
+            }else{
+                alert("Une erreur est survenue code : ERR-RET-TOGGCEL");
+            }
         }
 
     },
